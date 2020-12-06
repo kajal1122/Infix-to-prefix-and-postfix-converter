@@ -76,48 +76,56 @@ class App extends Component
                 {
                   return char.toLowerCase() !== char.toUpperCase()
                 }
-         for(var i =0; i<exp.length; i++)
-         {
-           var k = exp.charAt(i);
-           if(alpha(k) === true)
-           {
-             postFix += k;
-           }
-           else if(k === '(') {
-             s.push(k);
-           }
-           else if(k === ')')
-           {
-             while(!s.isEmpty() && s.peek() !== '(')
-             {
-               var ch = s.peek();
-               postFix += ch;
 
-               s.pop();
-             }
-             if(s.peek() === '(')
-             {
-               s.pop();
-             }
-           }
-           else {
-             while(!s.isEmpty() && pre(k) <= pre(s.peek()))
-             {
-               var ph = s.peek();
-               postFix += ph;
-               s.pop();
-             }
-             s.push(k);
-           }
+        var getPostFix = function(exp)
+        {
+          var postFix = "";
+          for(var i =0; i<exp.length; i++)
+          {
+            var k = exp.charAt(i);
+            if(alpha(k) === true)
+            {
+              postFix += k;
+            }
+            else if(k === '(') {
+              s.push(k);
+            }
+            else if(k === ')')
+            {
+              while(!s.isEmpty() && s.peek() !== '(')
+              {
+                var ch = s.peek();
+                postFix += ch;
 
-         }
-         while(!s.isEmpty())
-         {
-           var po = s.peek();
-           postFix += po;
-           s.pop();
-         }
-         console.log(postFix);
+                s.pop();
+              }
+              if(s.peek() === '(')
+              {
+                s.pop();
+              }
+            }
+            else {
+              while(!s.isEmpty() && pre(k) <= pre(s.peek()))
+              {
+                var ph = s.peek();
+                postFix += ph;
+                s.pop();
+              }
+              s.push(k);
+            }
+
+          }
+          while(!s.isEmpty())
+          {
+            var po = s.peek();
+            postFix += po;
+            s.pop();
+          }
+          return postFix;
+
+        }
+         postFix = getPostFix(exp);
+        // console.log(postFix);
         current.setState({postfix:postFix});
 
         // convert to prefix
@@ -132,9 +140,35 @@ class App extends Component
         }
 
         var currExp = revString(exp);
-        console.log(currExp);
+        //console.log(currExp);
 
-        console.log(currExp);
+        var newExp ="";
+        for(var j =0 ; j<currExp.length; j++)
+        {
+          if(currExp.charAt(j) === '(')
+          {
+            newExp += ')';
+          }
+          else if(currExp.charAt(j) === ')')
+          {
+            newExp += '(';
+          }
+          else {
+
+            newExp += currExp.charAt(j);
+          }
+        }
+
+
+
+        //newExp = getPostFix(newExp);
+        var currPreFix = getPostFix(newExp);
+
+        var finalPreFix = revString(currPreFix);
+        current.setState({prefix:finalPreFix});
+
+
+
 
 
 
@@ -147,6 +181,17 @@ class App extends Component
            textAlign : "center",
            marginTop: "70px",
 
+           //width:"100%",
+
+
+        }
+        const myProj =
+        {
+          width : "60%",
+          //height:"100%",
+          padding:'30px',
+          marginLeft:"300px",
+          backgroundColor : "#FA9D68",
         }
         const userInput =
         {
@@ -154,13 +199,31 @@ class App extends Component
           margin :"10px",
         }
 
+        const foo =
+        {
+          position: "fixed",
+          left: "0",
+          bottom: "0",
+          width: "100%",
+
+          textAlign: "center",
+        }
+
 
         return(
           <div style={mystyle}>
-             <h1>Infix to PostFix and PreFix Converter</h1>
+             <div style={myProj}>
+             <h1>Infix expression to PostFix and PreFix expression Converter</h1>
+             <small>Please enter infix expression in the given box  for example (a+b) </small><br/>
              <input style={userInput} type="text" id="expression" name="expression" value={this.state.expression} onChange={this.eventHandeler} placeholder="Enter Infix Expression" />
              <button style = {userInput} type="submit" onClick={this.foo} >Convert</button>
-             <p> PostFix : {this.state.postfix} </p>
+             <p> PostFix Expression : {this.state.postfix} </p>
+             <p> PreFix Expression : {this.state.prefix} </p>
+             </div>
+
+             <footer style={foo}>
+               Made with ❤️ by Kajal
+             </footer>
 
           </div>
         )
